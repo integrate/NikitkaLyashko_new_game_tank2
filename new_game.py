@@ -4,6 +4,7 @@ from wrap import sprite
 
 wrap.world.create_world(1000,1000)
 
+bullets = []
 
 green_enemy_tank=wrap.sprite.add("battle_city_tanks",100,100,"tank_enemy_size1_green1")
 purple_tank_enemy=wrap.sprite.add("battle_city_tanks",900,100,"tank_enemy_size1_purple1")
@@ -144,7 +145,54 @@ def begin_tank():
 def begin_tank_purple():
     enemy_tank(purple_tank_enemy)
 
+@wrap.on_key_down(key=wrap.K_SPACE)
+def shoot():
+    bottom_yel_tank=sprite.get_bottom(yellow_tank)
+    top_yel_tank=sprite.get_top(yellow_tank)
+    left_yel_tank=sprite.get_left(yellow_tank)
+    right_yel_tank=sprite.get_right(yellow_tank)
+    y_yel_tank=sprite.get_y(yellow_tank)
+    x_yel_tank=sprite.get_x(yellow_tank)
+    angle_tank=sprite.get_angle(yellow_tank)
 
+
+
+    if angle_tank==0:
+        bullet=sprite.add("battle_city_items", x_yel_tank,top_yel_tank,"bullet")
+        sprite.set_angle(bullet,angle_tank)
+
+    if angle_tank==90:
+        bullet=sprite.add("battle_city_items", right_yel_tank,y_yel_tank,"bullet")
+
+
+    if angle_tank==180:
+        bullet=sprite.add("battle_city_items", x_yel_tank,bottom_yel_tank,"bullet")
+
+
+    if angle_tank==-90:
+        bullet=sprite.add("battle_city_items", left_yel_tank,y_yel_tank,"bullet")
+
+    sprite.set_angle(bullet,angle_tank)
+    bullets.append(bullet)
+    print(bullets)
+    sprite.move_at_angle_dir(bullet,15)
+
+@wrap.always(delay=10)
+def fly_bullet():
+    global bullets_fly
+    for bullets_fly in bullets:
+        sprite.move_at_angle_dir(bullets_fly,1)
+
+        collide_gt_bull=sprite.is_collide_sprite(green_enemy_tank,bullets_fly)
+        collide_pt_bull=sprite.is_collide_sprite(purple_tank_enemy,bullets_fly)
+        if collide_gt_bull==True:
+            sprite.move_to(green_enemy_tank,100,100)
+            sprite.remove(bullets_fly)
+            bullets.remove(bullets_fly)
+        if collide_pt_bull==True:
+            sprite.move_to(purple_tank_enemy,900,100)
+            sprite.remove(bullets_fly)
+            bullets.remove(bullets_fly)
 
 
 

@@ -11,5 +11,13 @@ k.insert(0,12)
 d1.remove(10)
 k.append(d)
 k.append(k)
+print(d[1])
+d[1]=112
+del a
+del d1[1]
+g=len(k)
+print(g)
 
-
+l=[55,"time",True,False,None]
+for cpicok in l:
+    print(cpicok)
