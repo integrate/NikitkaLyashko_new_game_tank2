@@ -5,10 +5,12 @@ from wrap import sprite
 wrap.world.create_world(1000,1000)
 
 bullets = []
+bullets_enemy = []
+
 
 green_enemy_tank=wrap.sprite.add("battle_city_tanks",100,100,"tank_enemy_size1_green1")
 purple_tank_enemy=wrap.sprite.add("battle_city_tanks",900,100,"tank_enemy_size1_purple1")
-yellow_tank=wrap.sprite.add("battle_city_tanks",500,500,"tank_enemy_size2_yellow1")
+yellow_tank=wrap.sprite.add("battle_city_tanks",500,900,"tank_enemy_size2_yellow1")
 
 wrap.sprite.set_reverse_y(green_enemy_tank,True)
 wrap.sprite.set_reverse_y(purple_tank_enemy,True)
@@ -24,7 +26,6 @@ def is_collide_sprite(id1,id2):
     bottom2=sprite.get_bottom(id2)
     right2=sprite.get_right(id2)
     left2=sprite.get_left(id2)
-
 
     if (top2<=bottom1 and top2>=top1) or (bottom2<=bottom1 and bottom2>=top1) or\
         (top1<=bottom2 and top1>=top2) or (bottom1>=top2 and bottom1<=bottom2):
@@ -44,8 +45,6 @@ def is_collide_sprite(id1,id2):
     else:
         return False
 
-
-
 # W__________________________
 @wrap.on_key_always(wrap.K_w,wrap.K_a,wrap.K_s,wrap.K_d,delay=10)
 def actions_yellow_tank_W (keys):
@@ -53,19 +52,15 @@ def actions_yellow_tank_W (keys):
     x_our_tank=sprite.get_x(yellow_tank)
     y_our_tank=sprite.get_y(yellow_tank)
 
-
-
     costum_tank=sprite.get_costume(yellow_tank)
     if costum_tank=="tank_enemy_size2_yellow1":
         sprite.set_costume(yellow_tank,"tank_enemy_size2_yellow2")
     else:
         sprite.set_costume(yellow_tank,"tank_enemy_size2_yellow1")
 
-
     if wrap.K_w in keys:
         sprite.move(yellow_tank,0,-3)
         sprite.set_angle(yellow_tank,0)
-
 
     elif wrap.K_a in keys:
         sprite.move(yellow_tank,-3,0)
@@ -86,12 +81,6 @@ def actions_yellow_tank_W (keys):
     collide_our = is_collide_sprite(yellow_tank, purple_tank_enemy)
     if collide_our == True:
         sprite.move_to(yellow_tank, x_our_tank, y_our_tank)
-
-
-#Если осb X совпали, тогда вражеский танк доложен ехать по направлению к нашему танку по оси Y, до тех пор пока не доедет до границы в 100px.
-#Если осb y совпали, тогда вражеский танк доложен ехать по направлению к нашему танку по оси x, до тех пор пока не доедет до границы в 100px.
-#Если оси не совпадют, тогда вражеский танк должен ехать по направлению к нашему танку по оси У.
-
 
 def enemy_tank(id):
 
@@ -133,6 +122,32 @@ def enemy_tank(id):
     if collide_enemy==True:
         sprite.move_to(id,x_enemy,y_enemy)
 
+def bullet(id,list):
+
+    bottom_yel_tank=sprite.get_bottom(id)
+    top_yel_tank=sprite.get_top(id)
+    left_yel_tank=sprite.get_left(id)
+    right_yel_tank=sprite.get_right(id)
+    y_yel_tank=sprite.get_y(id)
+    x_yel_tank=sprite.get_x(id)
+    angle_tank=sprite.get_angle(id)
+
+    if angle_tank==0:
+        bullet=sprite.add("battle_city_items", x_yel_tank,top_yel_tank,"bullet")
+
+    if angle_tank==90:
+        bullet=sprite.add("battle_city_items", right_yel_tank,y_yel_tank,"bullet")
+
+
+    if angle_tank==180:
+        bullet=sprite.add("battle_city_items", x_yel_tank,bottom_yel_tank,"bullet")
+
+
+    if angle_tank==-90:
+        bullet=sprite.add("battle_city_items", left_yel_tank,y_yel_tank,"bullet")
+
+    sprite.set_angle(bullet,angle_tank)
+    list.append(bullet)
 
 
 
@@ -147,41 +162,13 @@ def begin_tank_purple():
 
 @wrap.on_key_down(key=wrap.K_SPACE)
 def shoot():
-    bottom_yel_tank=sprite.get_bottom(yellow_tank)
-    top_yel_tank=sprite.get_top(yellow_tank)
-    left_yel_tank=sprite.get_left(yellow_tank)
-    right_yel_tank=sprite.get_right(yellow_tank)
-    y_yel_tank=sprite.get_y(yellow_tank)
-    x_yel_tank=sprite.get_x(yellow_tank)
-    angle_tank=sprite.get_angle(yellow_tank)
-
-
-
-    if angle_tank==0:
-        bullet=sprite.add("battle_city_items", x_yel_tank,top_yel_tank,"bullet")
-        sprite.set_angle(bullet,angle_tank)
-
-    if angle_tank==90:
-        bullet=sprite.add("battle_city_items", right_yel_tank,y_yel_tank,"bullet")
-
-
-    if angle_tank==180:
-        bullet=sprite.add("battle_city_items", x_yel_tank,bottom_yel_tank,"bullet")
-
-
-    if angle_tank==-90:
-        bullet=sprite.add("battle_city_items", left_yel_tank,y_yel_tank,"bullet")
-
-    sprite.set_angle(bullet,angle_tank)
-    bullets.append(bullet)
-    print(bullets)
-    sprite.move_at_angle_dir(bullet,15)
+    bullet(yellow_tank,bullets)
 
 @wrap.always(delay=10)
 def fly_bullet():
-    global bullets_fly
     for bullets_fly in bullets:
-        sprite.move_at_angle_dir(bullets_fly,1)
+        sprite.move_at_angle_dir(bullets_fly,5)
+
 
         collide_gt_bull=sprite.is_collide_sprite(green_enemy_tank,bullets_fly)
         collide_pt_bull=sprite.is_collide_sprite(purple_tank_enemy,bullets_fly)
@@ -194,30 +181,27 @@ def fly_bullet():
             sprite.remove(bullets_fly)
             bullets.remove(bullets_fly)
 
+    for bullets_fly in bullets_enemy:
+        sprite.move_at_angle_dir(bullets_fly, 5)
+        collide_yeltank=sprite.is_collide_sprite(yellow_tank,bullets_fly)
+        if collide_yeltank==True:
+            sprite.move_to(yellow_tank,500,900)
+            sprite.remove(bullets_fly)
+            bullets_enemy.remove(bullets_fly)
 
 
 
 
 
 
+@wrap.always(delay=1000)
+def shot_enemy_tanks():
+    bullet(green_enemy_tank,bullets_enemy)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
-
+@wrap.always(delay=1500)
+def shot_enemy_tanks():
+    bullet(purple_tank_enemy,bullets_enemy)
 
 
 
