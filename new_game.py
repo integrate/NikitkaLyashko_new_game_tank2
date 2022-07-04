@@ -99,12 +99,20 @@ def enemy_tank(id):
         sprite.move(id,0,-1)
 
     if y_our_tank==y_enemy:
+        if x_enemy<x_our_tank:
+            sprite.set_angle(id,90)
+
         if x_our_tank>x_enemy+100:
-            sprite.set_angle(id, 90)
             sprite.move(id,1,0)
+
+        if x_enemy>x_our_tank:
+            sprite.set_angle(id,270)
+
         if x_our_tank<x_enemy-100:
-            sprite.set_angle(id, 270)
             sprite.move(id,-1,0)
+
+
+
     if x_our_tank==x_enemy:
         if y_our_tank>y_enemy+100:
 
@@ -168,10 +176,15 @@ def shoot():
 def fly_bullet():
     for bullets_fly in bullets:
         sprite.move_at_angle_dir(bullets_fly,5)
-
-
         collide_gt_bull=sprite.is_collide_sprite(green_enemy_tank,bullets_fly)
         collide_pt_bull=sprite.is_collide_sprite(purple_tank_enemy,bullets_fly)
+
+        y_bul_our=sprite.get_y(bullets_fly)
+        x_bul_our=sprite.get_x(bullets_fly)
+        if y_bul_our>=1000 or x_bul_our>=1000 or x_bul_our<=0 or y_bul_our<=0:
+            sprite.remove(bullets_fly)
+            bullets.remove(bullets_fly)
+
         if collide_gt_bull==True:
             sprite.move_to(green_enemy_tank,100,100)
             sprite.remove(bullets_fly)
@@ -184,11 +197,19 @@ def fly_bullet():
     for bullets_fly in bullets_enemy:
         sprite.move_at_angle_dir(bullets_fly, 5)
         collide_yeltank=sprite.is_collide_sprite(yellow_tank,bullets_fly)
+        x_bullet=sprite.get_x(bullets_fly)
+        y_bullet=sprite.get_y(bullets_fly)
         if collide_yeltank==True:
             sprite.move_to(yellow_tank,500,900)
             sprite.remove(bullets_fly)
             bullets_enemy.remove(bullets_fly)
 
+        if x_bullet>=1000 or y_bullet>=1000 or x_bullet<=0 or y_bullet<=0:
+            sprite.remove(bullets_fly)
+            bullets_enemy.remove(bullets_fly)
+
+    len_bul_our = len(bullets)
+    wrap.world.set_title(len_bul_our)
 
 
 
