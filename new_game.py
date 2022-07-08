@@ -12,6 +12,8 @@ green_enemy_tank=wrap.sprite.add("battle_city_tanks",100,100,"tank_enemy_size1_g
 purple_tank_enemy=wrap.sprite.add("battle_city_tanks",900,100,"tank_enemy_size1_purple1")
 yellow_tank=wrap.sprite.add("battle_city_tanks",500,900,"tank_enemy_size2_yellow1")
 
+
+
 wrap.sprite.set_reverse_y(green_enemy_tank,True)
 wrap.sprite.set_reverse_y(purple_tank_enemy,True)
 
@@ -174,6 +176,7 @@ def shoot():
 
 @wrap.always(delay=10)
 def fly_bullet():
+    global bullets_fly
     for bullets_fly in bullets:
         sprite.move_at_angle_dir(bullets_fly,5)
         collide_gt_bull=sprite.is_collide_sprite(green_enemy_tank,bullets_fly)
@@ -225,6 +228,17 @@ def shot_enemy_tanks():
     bullet(purple_tank_enemy,bullets_enemy)
 
 
+def camp(x, y):
+    block=wrap.sprite.add("battle_city_items", x, y, "block_brick")
+
+camp(500, 500)
+
+
+#@wrap.always(delay=10)
+def perecechenie_block_bullet(id):
+    colide_block=is_collide_sprite(block,id)
+    if colide_block==True:
+        sprite.remove(bullets_fly)
 
 
 
