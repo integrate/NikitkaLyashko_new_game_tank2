@@ -230,15 +230,30 @@ def shot_enemy_tanks():
 
 def camp(x, y):
     block=wrap.sprite.add("battle_city_items", x, y, "block_brick")
+    return block
 
-camp(500, 500)
+block=camp(500, 500)
 
 
-#@wrap.always(delay=10)
-def perecechenie_block_bullet(id):
-    colide_block=is_collide_sprite(block,id)
-    if colide_block==True:
-        sprite.remove(bullets_fly)
+@wrap.always(delay=10)
+def perecechenie_block_bullet():
+    for bullets_fly in bullets:
+
+        colide_block=is_collide_sprite(block,bullets_fly)
+        if colide_block==True:
+            sprite.remove(bullets_fly)
+            bullets.remove(bullets_fly)
+
+    for bullets_fly in bullets_enemy:
+
+        colide_block=is_collide_sprite(block,bullets_fly)
+        if colide_block==True:
+            sprite.remove(bullets_fly)
+            bullets_enemy.remove(bullets_fly)
+
+
+
+
 
 
 
