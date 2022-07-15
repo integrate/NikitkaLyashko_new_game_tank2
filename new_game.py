@@ -6,6 +6,7 @@ wrap.world.create_world(1000,1000)
 
 bullets = []
 bullets_enemy = []
+blocks=[]
 
 
 green_enemy_tank=wrap.sprite.add("battle_city_tanks",100,100,"tank_enemy_size1_green1")
@@ -232,24 +233,31 @@ def camp(x, y):
     block=wrap.sprite.add("battle_city_items", x, y, "block_brick")
     return block
 
-block=camp(500, 500)
+blocks.append(camp(500,500))
+blocks.append(camp(300,300))
+blocks.append(camp(600,600))
 
 
 @wrap.always(delay=10)
 def perecechenie_block_bullet():
-    for bullets_fly in bullets:
 
-        colide_block=is_collide_sprite(block,bullets_fly)
-        if colide_block==True:
-            sprite.remove(bullets_fly)
-            bullets.remove(bullets_fly)
+    for block in blocks:
+        for bullets_fly in bullets:
 
-    for bullets_fly in bullets_enemy:
 
-        colide_block=is_collide_sprite(block,bullets_fly)
-        if colide_block==True:
-            sprite.remove(bullets_fly)
-            bullets_enemy.remove(bullets_fly)
+
+            colide_block=is_collide_sprite(block,bullets_fly)
+            if colide_block==True:
+                sprite.remove(bullets_fly)
+                bullets.remove(bullets_fly)
+
+
+    for block in blocks:
+        for bullets_fly in bullets_enemy:
+            colide_block=is_collide_sprite(block,bullets_fly)
+            if colide_block==True:
+                sprite.remove(bullets_fly)
+                bullets_enemy.remove(bullets_fly)
 
 
 
