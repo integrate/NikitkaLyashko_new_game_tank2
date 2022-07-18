@@ -85,8 +85,12 @@ def actions_yellow_tank_W (keys):
     if collide_our == True:
         sprite.move_to(yellow_tank, x_our_tank, y_our_tank)
 
-def enemy_tank(id):
+    for block in blocks:
+        collide_our_tank=is_collide_sprite(block,yellow_tank)
+        if collide_our_tank==True:
+            sprite.move_to(yellow_tank,x_our_tank,y_our_tank)
 
+def move_enemy_tanks(id):
     x_our_tank = sprite.get_x(yellow_tank)
     y_our_tank = sprite.get_y(yellow_tank)
 
@@ -123,6 +127,16 @@ def enemy_tank(id):
         if y_our_tank<y_enemy-100:
             sprite.move(id,0,-1)
 
+def enemy_tank(id):
+
+    x_our_tank = sprite.get_x(yellow_tank)
+    y_our_tank = sprite.get_y(yellow_tank)
+
+    x_enemy = sprite.get_x(id)
+    y_enemy = sprite.get_y(id)
+
+    move_enemy_tanks(id)
+
     enemy_enemy=is_collide_sprite(green_enemy_tank,purple_tank_enemy)
     if enemy_enemy==True:
         sprite.move_to(id,x_enemy,y_enemy)
@@ -132,6 +146,11 @@ def enemy_tank(id):
     # print(y_our_tank,y_enemy,collide_enemy,collide_1)
     if collide_enemy==True:
         sprite.move_to(id,x_enemy,y_enemy)
+
+    for block in blocks:
+        collide_our_tank=is_collide_sprite(block,id)
+        if collide_our_tank==True:
+            sprite.move_to(id,x_enemy,y_enemy)
 
 def bullet(id,list):
 
@@ -270,3 +289,10 @@ def perecechenie_block_bullet():
 
 
 
+
+
+
+
+
+import wrap_py
+wrap_py.app.start()
