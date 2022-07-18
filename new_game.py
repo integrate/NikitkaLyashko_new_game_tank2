@@ -252,9 +252,11 @@ def camp(x, y):
     block=wrap.sprite.add("battle_city_items", x, y, "block_brick")
     return block
 
-blocks.append(camp(500,500))
-blocks.append(camp(300,300))
-blocks.append(camp(600,600))
+
+for number in [0,32,64,96]:
+    blocks.append(camp(200+number, 500))
+
+
 
 
 @wrap.always(delay=10)
